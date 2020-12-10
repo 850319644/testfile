@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="前端开发,sass,css 预处理器" />
+    <meta name="description" content="本文以 sass 语法点为主线展开，但语法细节不在此赘述，如有疑问请移驾至 http://sass-lang.com 自行查阅。我所认为的 sass 的优势：结构化（层级关系更清晰）、组件化（公用模块的提取）、继承（公用样式的提取），希望读者能在浏览完此文后有所体会。" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+    <title>呆恋小喵的后花园 - Sass 学习笔记</title>
+    <link rel="shortcut icon" href="https://sunmengyuan.github.io/materials/garden/shortcut.ico" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-dark.min.css" />
+    <link rel="stylesheet/less" href="/garden/assets/style/style.less" />
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+</head>
+<body>
+<script>
+    var pageData = {};
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement('script');
+        hm.src = 'https://hm.baidu.com/hm.js?6b9830e6ab8073ce1a44ad49a03d8596';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<img src="https://sunmengyuan.github.io/materials/garden/portrait.jpg" alt="呆恋小喵" width="0" height="0" />
+<nav>
+    <a href="javascript:;" class="js_menu_btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </a>
+    <ul class="js_menu">
+        <li><a href="/garden/">Home</a></li>
+        <li><a href="/garden/views/posts" class="js_goto_posts">Posts</a></li>
+        <li><a href="/garden/views/about">About</a></li>
+    </ul>
+</nav>
+<a href="javascript:;" class="gotop js_gotop"></a>
+<header class="post" style="background-image: url('https://sunmengyuan.github.io/materials/garden/banner.jpg')">
+    <div>
+        <h2>Sass 学习笔记</h2>
+        <time>17 May 2017</time>
+        <p class="abstract">本文以 sass 语法点为主线展开，但语法细节不在此赘述，如有疑问请移驾至 http://sass-lang.com 自行查阅。我所认为的 sass 的优势：结构化（层级关系更清晰）、组件化（公用模块的提取）、继承（公用样式的提取），希望读者能在浏览完此文后有所体会。</p>
+        <ul class="c-fix">
+            
+            <li>sass</li>
+            
+            <li>css 预处理器</li>
+            
+        </ul>
+    </div>
+</header>
+<article class="js_article">
+    <p>进入正文前，先为大家推荐一枚神奇的网站：<a href="https://www.sassmeister.com/">https://www.sassmeister.com/</a>。</p>
+
+<h2 id="一变量">一、变量</h2>
+
+<h4 id="变量默认值">变量默认值</h4>
+
+<blockquote>
+  <p>变量默认值的价值在于进行组件化开发。</p>
+</blockquote>
+
+<h5 id="应用场景">应用场景</h5>
+
+<p>一个站点内的公用模块在不同页面的展现形式会有些许不同，例如一个列表模块中列表项的分隔方式在不同页面存在差异。</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/sass-application/module-list.jpg" alt="" /></p>
+
+<p>传统做法：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="c">/* m-module-list.css */</span>
+<span class="nc">.module-list</span> <span class="nt">li</span> <span class="p">{</span>
+    <span class="nl">font-size</span><span class="p">:</span> <span class="m">14px</span><span class="p">;</span>
+    <span class="nl">line-height</span><span class="p">:</span> <span class="m">22px</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#666</span><span class="p">;</span>
+    <span class="nl">padding</span><span class="p">:</span> <span class="m">15px</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="m">#FFF</span><span class="p">;</span>
+    <span class="nl">border-bottom</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="m">#F0F0F0</span><span class="p">;</span>
+    <span class="nl">margin-bottom</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/* style.css */</span>
+<span class="k">@import</span> <span class="s2">'m-module-list.css'</span><span class="p">;</span>
+
+<span class="nc">.module-list</span> <span class="nt">li</span> <span class="p">{</span>
+    <span class="nl">border-bottom</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+    <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>显然，传统做法会产生 <strong>冗余</strong> 代码。对 .module-list li 的 border-bottom 及 margin-bottom 定义了两次（很好的体现了 css <strong>层叠</strong> 的理念）。</p>
+
+<p>使用变量默认值：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="cm">/* m-module-list.scss */
+</span><span class="nv">$borderBottom</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="mh">#F0F0F0</span> <span class="o">!</span><span class="nb">default</span><span class="err">;</span>
+<span class="nv">$marginBottom</span><span class="p">:</span> <span class="nb">none</span> <span class="o">!</span><span class="nb">default</span><span class="err">;</span>
+
+<span class="nc">.module-list</span> <span class="err">{</span>
+    <span class="nt">li</span> <span class="err">{</span>
+        <span class="nl">font-size</span><span class="p">:</span> <span class="m">14px</span><span class="err">;</span>
+        <span class="nl">line-height</span><span class="p">:</span> <span class="m">22px</span><span class="err">;</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="mh">#666</span><span class="err">;</span>
+        <span class="nl">padding</span><span class="p">:</span> <span class="m">15px</span><span class="err">;</span>
+        <span class="nl">background-color</span><span class="p">:</span> <span class="mh">#FFF</span><span class="err">;</span>
+        <span class="nl">border-bottom</span><span class="p">:</span> <span class="nv">$borderBottom</span><span class="err">;</span>
+        <span class="nl">margin-bottom</span><span class="p">:</span> <span class="nv">$marginBottom</span><span class="err">;</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+
+<span class="cm">/* style.scss */
+</span><span class="nv">$borderBottom</span><span class="p">:</span> <span class="nb">none</span><span class="err">;</span>
+<span class="nv">$marginBottom</span><span class="p">:</span> <span class="m">10px</span><span class="err">;</span>
+
+<span class="k">@import</span> <span class="s">'m-module-list';</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.module-list</span> <span class="nt">li</span> <span class="p">{</span>
+    <span class="nl">font-size</span><span class="p">:</span> <span class="m">14px</span><span class="p">;</span>
+    <span class="nl">line-height</span><span class="p">:</span> <span class="m">22px</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#666</span><span class="p">;</span>
+    <span class="nl">padding</span><span class="p">:</span> <span class="m">15px</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="m">#FFF</span><span class="p">;</span>
+    <span class="nl">border-bottom</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+    <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>上述方法是存在缺陷的：定义 <strong>全局变量</strong> 很容易造成 <strong>污染</strong>。但自 sass v3.4 便不存在这样的问题了，为什么这样讲？</p>
+
+<p>先看一段示例：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nv">$color</span><span class="p">:</span> <span class="no">red</span><span class="err">;</span>
+<span class="nt">p</span> <span class="err">{</span>
+    <span class="nv">$color</span><span class="p">:</span> <span class="no">yellow</span><span class="err">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="nv">$color</span><span class="err">;</span>
+<span class="err">}</span>
+<span class="nt">a</span> <span class="err">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="nv">$color</span><span class="err">;</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>sass v3.3 解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nt">p</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="no">yellow</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="no">yellow</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>sass v3.4 解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nt">p</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="no">yellow</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="no">red</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>自 sass v3.4 变量的解析遵循：底层作用域内声明的变量相当于局部变量，不影响全局变量。</p>
+
+<p>使用 javascript 解释：</p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> 
+<span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> 
+    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> 
+<span class="p">})();</span> 
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span> <span class="c1">// -&gt; 1</span>
+</code></pre>
+</div>
+
+<p>而 sass v3.3 及以前对变量的设计思路为：在底层作用域声明变量相当于修改全局变量，它处调用该变量时会使用覆盖的新值。</p>
+
+<p>使用 javascript 解释：</p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> 
+<span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> 
+    <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> 
+<span class="p">})();</span> 
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span> <span class="c1">// -&gt; 5</span>
+</code></pre>
+</div>
+
+<h4 id="特殊变量">特殊变量</h4>
+
+<ul>
+  <li>
+    <p>应用于选择器</p>
+  </li>
+  <li>
+    <p>应用于属性</p>
+  </li>
+</ul>
+
+<p>特殊变量的应用十分广泛，在此不做特别介绍。请自行留意文中 <strong><em>#{$var}</em></strong> 这样的书写方式，那就是所谓的特殊变量。</p>
+
+<h4 id="多值变量">多值变量</h4>
+
+<ul>
+  <li>List 类型</li>
+</ul>
+
+<h5 id="应用场景-1">应用场景</h5>
+
+<p>由于存在图片失效或尺寸不合规定的情况，我们通常需要为图片添加默认底色及占位。例如浮动布局中元素尺寸的变化会扰乱呈现效果：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/sass-application/thumb-placeholder-anti.jpg" alt="" /></p>
+
+<p>当然，上述问题可以通过为左侧元素清除浮动或延时加载图片等方法解决。在此，我们仅讲述为图片添加占位这一方法，效果如下：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/sass-application/thumb-placeholder.jpg" alt="" /></p>
+
+<p>在不同的业务场景下，占位图风格各异。例如我司的常规需求、活动类需求、专题类需求所启用的占位图就在颜色及底纹上存在差异。</p>
+
+<p>我们可以定义 3 种图片类型 default、activity、special 存储在 <strong>List 类型变量</strong> $thumbType 中，这样书写语义清晰、利于拓展、精简代码。</p>
+
+<p>相关代码：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nv">$thumbType</span><span class="p">:</span> <span class="nb">default</span><span class="o">,</span> <span class="n">activity</span><span class="o">,</span> <span class="n">special</span><span class="err">;</span>
+<span class="k">@each</span> <span class="nv">$type</span> <span class="n">in</span> <span class="nv">$thumbType</span> <span class="err">{</span>
+    <span class="nv">%</span><span class="si">#{</span><span class="nv">$type</span><span class="si">}</span><span class="nv">-thumb</span> <span class="err">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="sx">url("../img/</span><span class="si">#{</span><span class="nv">$type</span><span class="si">}</span><span class="sx">-nothumb.jpg")</span> <span class="nb">no-repeat</span> <span class="m">0</span> <span class="m">0</span><span class="err">;</span>
+        <span class="nl">background-size</span><span class="p">:</span> <span class="m">100%</span> <span class="nb">auto</span><span class="err">;</span>
+        <span class="nl">padding-bottom</span><span class="p">:</span> <span class="m">100%</span><span class="err">;</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">0</span><span class="err">;</span>
+        <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="err">;</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+
+<span class="nc">.section1</span> <span class="nc">.thumb</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%default-thumb</span><span class="o">;</span>
+<span class="err">}</span>
+<span class="nc">.section2</span> <span class="nc">.thumb</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%activity-thumb</span><span class="o">;</span>
+<span class="err">}</span>
+<span class="nc">.section3</span> <span class="nc">.thumb</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%special-thumb</span><span class="o">;</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.section1</span> <span class="nc">.thumb</span> <span class="p">{</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="sx">url("../img/default-nothumb.jpg")</span> <span class="nb">no-repeat</span> <span class="m">0</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">background-size</span><span class="p">:</span> <span class="m">100%</span> <span class="nb">auto</span><span class="p">;</span>
+    <span class="nl">padding-bottom</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.section2</span> <span class="nc">.thumb</span> <span class="p">{</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="sx">url("../img/activity-nothumb.jpg")</span> <span class="nb">no-repeat</span> <span class="m">0</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">background-size</span><span class="p">:</span> <span class="m">100%</span> <span class="nb">auto</span><span class="p">;</span>
+    <span class="nl">padding-bottom</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.section3</span> <span class="nc">.thumb</span> <span class="p">{</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="sx">url("../img/special-nothumb.jpg")</span> <span class="nb">no-repeat</span> <span class="m">0</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">background-size</span><span class="p">:</span> <span class="m">100%</span> <span class="nb">auto</span><span class="p">;</span>
+    <span class="nl">padding-bottom</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<ul>
+  <li>Map 类型</li>
+</ul>
+
+<h5 id="应用场景-2">应用场景</h5>
+
+<p>通常，一个站点含多套配色方案，以按钮的配色为例：主色、辅助色、弱色。每套配色又由多种状态色组成：常态色、点击色、失效色。</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/sass-application/btn-group.jpg" alt="" /></p>
+
+<p>我们可以将这些色值按照一定的规则储存在 <strong>Map 类型变量</strong> 中，这样做的优势为：</p>
+
+<ul>
+  <li>
+    <p>结构及语义清晰，增强了可读性且易于修改。</p>
+  </li>
+  <li>
+    <p>添加新的配色方案相当于添加配置项，无需撰写大量代码。</p>
+  </li>
+</ul>
+
+<p>相关代码：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nv">$btnColor</span><span class="p">:</span> <span class="p">(</span>
+    <span class="na">main</span><span class="p">:</span> <span class="p">(</span>
+        <span class="na">normal</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nl">font</span><span class="p">:</span> <span class="mh">#C53336</span><span class="o">,</span>
+            <span class="nl">border</span><span class="p">:</span> <span class="mh">#C53336</span><span class="o">,</span>
+            <span class="nl">background</span><span class="p">:</span> <span class="mh">#FFF</span>
+        <span class="o">),</span>
+        <span class="na">active</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nl">font</span><span class="p">:</span> <span class="mh">#FFF</span><span class="o">,</span>
+            <span class="nl">border</span><span class="p">:</span> <span class="mh">#C53336</span><span class="o">,</span>
+            <span class="nl">background</span><span class="p">:</span> <span class="mh">#C53336</span>
+        <span class="o">),</span>
+        <span class="na">disabled</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nl">font</span><span class="p">:</span> <span class="mh">#999</span><span class="o">,</span>
+            <span class="nl">border</span><span class="p">:</span> <span class="mh">#F5F5F5</span><span class="o">,</span>
+            <span class="nl">background</span><span class="p">:</span> <span class="mh">#F5F5F5</span>
+        <span class="o">)</span>
+    <span class="o">),</span>
+    <span class="na">weak</span><span class="p">:</span> <span class="p">(</span>
+        <span class="na">normal</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nl">font</span><span class="p">:</span> <span class="mh">#333</span><span class="o">,</span>
+            <span class="nl">border</span><span class="p">:</span> <span class="mh">#666</span><span class="o">,</span>
+            <span class="nl">background</span><span class="p">:</span> <span class="mh">#FFF</span>
+        <span class="o">),</span>
+        <span class="na">active</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nl">font</span><span class="p">:</span> <span class="mh">#FFF</span><span class="o">,</span>
+            <span class="nl">border</span><span class="p">:</span> <span class="mh">#666</span><span class="o">,</span>
+            <span class="nl">background</span><span class="p">:</span> <span class="mh">#666</span>
+        <span class="o">),</span>
+        <span class="na">disabled</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nl">font</span><span class="p">:</span> <span class="mh">#999</span><span class="o">,</span>
+            <span class="nl">border</span><span class="p">:</span> <span class="mh">#CCC</span><span class="o">,</span>
+            <span class="nl">background</span><span class="p">:</span> <span class="mh">#FFF</span>
+        <span class="o">)</span>
+    <span class="o">)</span>
+<span class="o">);</span>
+<span class="k">@mixin</span> <span class="nf">btnColor</span> <span class="p">(</span><span class="nv">$font</span><span class="o">,</span> <span class="nv">$border</span><span class="o">,</span> <span class="nv">$background</span><span class="p">)</span> <span class="err">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="nv">$font</span><span class="err">;</span>
+    <span class="nl">border-color</span><span class="p">:</span> <span class="nv">$border</span><span class="err">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="nv">$background</span><span class="err">;</span>
+<span class="err">}</span>
+<span class="k">@each</span> <span class="nv">$type</span><span class="o">,</span> <span class="nv">$status</span> <span class="n">in</span> <span class="nv">$btnColor</span> <span class="err">{</span>
+    <span class="nv">%btn-</span><span class="si">#{</span><span class="nv">$type</span><span class="si">}</span> <span class="err">{</span>
+        <span class="nv">$normal</span><span class="p">:</span> <span class="nf">map-get</span><span class="p">(</span><span class="nv">$status</span><span class="o">,</span> <span class="nb">normal</span><span class="p">)</span><span class="err">;</span>
+        <span class="nv">$active</span><span class="p">:</span> <span class="nf">map-get</span><span class="p">(</span><span class="nv">$status</span><span class="o">,</span> <span class="n">active</span><span class="p">)</span><span class="err">;</span>
+        <span class="nv">$disabled</span><span class="p">:</span> <span class="nf">map-get</span><span class="p">(</span><span class="nv">$status</span><span class="o">,</span> <span class="n">disabled</span><span class="p">)</span><span class="err">;</span>
+        
+        <span class="k">@include</span> <span class="nd">btnColor</span><span class="p">(</span><span class="nf">map-values</span><span class="p">(</span><span class="nv">$normal</span><span class="p">)</span><span class="o">...</span><span class="p">)</span><span class="err">;</span>
+        
+        <span class="k">&amp;</span><span class="nd">:active</span> <span class="err">{</span>
+            <span class="k">@include</span> <span class="nd">btnColor</span><span class="p">(</span><span class="nf">map-values</span><span class="p">(</span><span class="nv">$active</span><span class="p">)</span><span class="o">...</span><span class="p">)</span><span class="err">;</span>
+        <span class="err">}</span>
+        <span class="k">&amp;</span><span class="nc">.disabled</span> <span class="err">{</span>
+            <span class="k">@include</span> <span class="nd">btnColor</span><span class="p">(</span><span class="nf">map-values</span><span class="p">(</span><span class="nv">$disabled</span><span class="p">)</span><span class="o">...</span><span class="p">)</span><span class="err">;</span>
+        <span class="err">}</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+
+<span class="nt">a</span><span class="nc">.btn-main</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%btn-main</span><span class="o">;</span>
+<span class="err">}</span>
+<span class="nt">a</span><span class="nc">.btn-weak</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%btn-weak</span><span class="o">;</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nt">a</span><span class="nc">.btn-main</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#C53336</span><span class="p">;</span>
+    <span class="nl">border-color</span><span class="p">:</span> <span class="m">#C53336</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="m">#FFF</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="nc">.btn-main</span><span class="nd">:active</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#FFF</span><span class="p">;</span>
+    <span class="nl">border-color</span><span class="p">:</span> <span class="m">#C53336</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="m">#C53336</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="nc">.disabled.btn-main</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#999</span><span class="p">;</span>
+    <span class="nl">border-color</span><span class="p">:</span> <span class="m">#F5F5F5</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="m">#F5F5F5</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="nc">.btn-weak</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#333</span><span class="p">;</span>
+    <span class="nl">border-color</span><span class="p">:</span> <span class="m">#666</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="m">#FFF</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="nc">.btn-weak</span><span class="nd">:active</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#FFF</span><span class="p">;</span>
+    <span class="nl">border-color</span><span class="p">:</span> <span class="m">#666</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="m">#666</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="nc">.disabled.btn-weak</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#999</span><span class="p">;</span>
+    <span class="nl">border-color</span><span class="p">:</span> <span class="m">#CCC</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="m">#FFF</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<hr />
+
+<h2 id="二嵌套">二、嵌套</h2>
+
+<p>嵌套可增强文件的结构性及可读性，但嵌套层级过多却是大忌，@at-root 可解决该问题。</p>
+
+<h4 id="at-root">@at-root</h4>
+
+<blockquote>
+  <p>@at-root 可防止选择器的优先级过高。</p>
+</blockquote>
+
+<p>先看一段很糟糕的代码，嵌套层级过多。层级关系的展现虽清晰，却莫名加高了选择器的 <strong>优先级</strong>。那么在重置样式的时候便需要加更高的优先级，由此恶性循环。</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nc">.parent</span> <span class="err">{</span>
+    <span class="nc">.child1</span> <span class="err">{</span>
+        <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="err">;</span>
+        <span class="nc">.child1-1</span> <span class="err">{</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="err">;</span> 
+            <span class="nc">.child1-1-1</span> <span class="err">{</span>
+                <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="err">;</span>
+            <span class="err">}</span>
+        <span class="err">}</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.parent</span> <span class="nc">.child1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.parent</span> <span class="nc">.child1</span> <span class="nc">.child1-1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.parent</span> <span class="nc">.child1</span> <span class="nc">.child1-1</span> <span class="nc">.child1-1-1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>显然，.parent .child1 .child1-1 .child1-1-1 的优先级很高却完全没必要，我们需要做的便是降级。</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nc">.parent</span> <span class="err">{</span>
+    <span class="nc">.child1</span> <span class="err">{</span>
+        <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="err">;</span>
+        <span class="k">@at-root</span> <span class="nc">.child1-1</span> <span class="err">{</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="err">;</span>
+            <span class="k">@at-root</span> <span class="nc">.child1-1-1</span> <span class="err">{</span>
+                <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="err">;</span>
+            <span class="err">}</span>
+        <span class="err">}</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.parent</span> <span class="nc">.child1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.child1-1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.child1-1-1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>其实这并不是我想要的，我想要的是：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.parent</span> <span class="nc">.child1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.parent</span> <span class="nc">.child1-1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.parent</span> <span class="nc">.child1-1-1</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>显然 @at-root 无法控制跳出的级数，无奈。</p>
+
+<p>@at-root 的另一应用场景便是 @keyframes。动画的专属性较强，嵌套的写法能清晰的标明其被应用之处。在做功能删除时只需直接干掉一整段代码，无需查找对应的 @keyframes 顺便思考其影响范围，省时高效。</p>
+
+<p>示例代码：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nc">.demo</span> <span class="err">{</span>
+    <span class="nl">animation</span><span class="p">:</span> <span class="n">motion</span> <span class="m">1s</span> <span class="n">infinite</span><span class="err">;</span>
+    <span class="k">@at-root</span> <span class="err">{</span>
+        <span class="k">@keyframes</span> <span class="nt">motion</span> <span class="err">{</span>
+            <span class="na">0</span><span class="err">% {</span><span class="nl">background-color</span><span class="p">:</span> <span class="no">red</span><span class="err">;}</span>
+            <span class="na">100</span><span class="err">% {</span><span class="nl">background-color</span><span class="p">:</span> <span class="no">yellow</span><span class="err">;}</span>
+        <span class="err">}</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.demo</span> <span class="p">{</span>
+    <span class="nl">animation</span><span class="p">:</span> <span class="n">motion</span> <span class="m">1s</span> <span class="n">infinite</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">@keyframes</span> <span class="n">motion</span> <span class="p">{</span>
+    <span class="nt">0</span><span class="o">%</span> <span class="p">{</span><span class="nl">background-color</span><span class="p">:</span> <span class="no">red</span><span class="p">;}</span>
+    <span class="nt">100</span><span class="o">%</span> <span class="p">{</span><span class="nl">background-color</span><span class="p">:</span> <span class="no">yellow</span><span class="p">;}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>其实上述是 sass v3.3 之前的做法，自 sass v3.4 这样书写即可：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nc">.demo</span> <span class="err">{</span>
+    <span class="nl">animation</span><span class="p">:</span> <span class="n">motion</span> <span class="m">1s</span> <span class="n">infinite</span><span class="err">;</span>
+    <span class="k">@keyframes</span> <span class="nt">motion</span> <span class="err">{</span>
+        <span class="na">0</span><span class="err">% {</span><span class="nl">background-color</span><span class="p">:</span> <span class="no">red</span><span class="err">;}</span>
+        <span class="na">100</span><span class="err">% {</span><span class="nl">background-color</span><span class="p">:</span> <span class="no">yellow</span><span class="err">;}</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>@keyframes 会自动跳出父级的限制。</p>
+
+<hr />
+
+<h2 id="三继承">三、继承</h2>
+
+<h4 id="mixin--include">@mixin + @include</h4>
+
+<blockquote>
+  <p>可传递参数，可设置参数默认值。</p>
+</blockquote>
+
+<h5 id="应用场景-3">应用场景</h5>
+
+<p>相信大家都很反感在使用 transition、transform 这类 css3 属性时需要巴拉巴拉添加一堆前缀。</p>
+
+<p>有了 sass 我们便可以定义一个自动添加前缀的方法啦！引用时，只需传入属性名及属性值，非常方便。且欲添加新的所须兼容的浏览器时，只需在 $compatibleBrowser 中添加配置项。若是使用传统做法，想象下某天老板要我们兼容 ms 了，你是要把全站代码修改一遍？</p>
+
+<p>相关代码：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nv">$compatibleBrowser</span><span class="p">:</span> <span class="n">webkit</span><span class="o">,</span> <span class="n">moz</span><span class="o">,</span> <span class="n">o</span><span class="err">;</span>
+<span class="k">@mixin</span> <span class="nf">addPrefix</span> <span class="p">(</span><span class="nv">$property</span><span class="o">,</span> <span class="nv">$value</span><span class="p">)</span> <span class="err">{</span>
+    <span class="k">@each</span> <span class="nv">$prefix</span> <span class="n">in</span> <span class="nv">$compatibleBrowser</span> <span class="err">{</span>
+        <span class="na">-</span><span class="si">#{</span><span class="nv">$prefix</span><span class="si">}</span><span class="na">-</span><span class="si">#{</span><span class="nv">$property</span><span class="si">}</span><span class="p">:</span> <span class="nv">$value</span><span class="err">;</span>
+    <span class="err">}</span>
+    <span class="si">#{</span><span class="nv">$property</span><span class="si">}</span><span class="p">:</span> <span class="nv">$value</span><span class="err">;</span>
+<span class="err">}</span>
+<span class="nc">.demo</span> <span class="err">{</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">red</span><span class="err">;</span>
+    <span class="k">@include</span> <span class="nd">addPrefix</span><span class="p">(</span><span class="n">transition</span><span class="o">,</span> <span class="n">background-color</span> <span class="m">2s</span><span class="p">)</span><span class="err">;</span>
+    <span class="k">&amp;</span><span class="nd">:hover</span> <span class="err">{</span>
+        <span class="nl">background-color</span><span class="p">:</span> <span class="no">yellow</span><span class="err">;</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.demo</span> <span class="p">{</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">red</span><span class="p">;</span>
+    <span class="nl">-webkit-transition</span><span class="p">:</span> <span class="n">background-color</span> <span class="m">2s</span><span class="p">;</span>
+    <span class="nl">-moz-transition</span><span class="p">:</span> <span class="n">background-color</span> <span class="m">2s</span><span class="p">;</span>
+    <span class="nl">-o-transition</span><span class="p">:</span> <span class="n">background-color</span> <span class="m">2s</span><span class="p">;</span>
+    <span class="nl">transition</span><span class="p">:</span> <span class="n">background-color</span> <span class="m">2s</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.demo</span><span class="nd">:hover</span> <span class="p">{</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">yellow</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="--extend">% + @extend</h4>
+
+<blockquote>
+  <p>用于定义通用样式最为合适。</p>
+</blockquote>
+
+<h5 id="应用场景-4">应用场景</h5>
+
+<p>通常，我们会创建这样一个文件 common.css 来定义一些通用样式，引用时在对应元素的 html 标签上添加相应的 class 即可。</p>
+
+<p>而 sass 的做法如下：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nv">%horizontal-scroll</span> <span class="err">{</span>
+    <span class="nl">white-space</span><span class="p">:</span> <span class="nb">nowrap</span><span class="err">;</span>
+    <span class="nl">overflow-x</span><span class="p">:</span> <span class="nb">scroll</span><span class="err">;</span>
+    <span class="nt">li</span> <span class="err">{</span>
+        <span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span><span class="err">;</span>
+        <span class="nl">vertical-align</span><span class="p">:</span> <span class="nb">middle</span><span class="err">;</span>
+    <span class="err">}</span>
+    <span class="err">&amp;</span><span class="p">:</span><span class="o">:-</span><span class="n">webkit-scrollbar</span> <span class="err">{</span>
+        <span class="nl">width</span><span class="p">:</span> <span class="m">0</span><span class="err">;</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">0</span><span class="err">;</span>
+        <span class="nl">opacity</span><span class="p">:</span> <span class="m">0</span><span class="err">;</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+
+<span class="nt">section</span><span class="nc">.horizontal-scroll</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%horizontal-scroll</span><span class="o">;</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nt">section</span><span class="nc">.horizontal-scroll</span> <span class="p">{</span>
+    <span class="nl">white-space</span><span class="p">:</span> <span class="nb">nowrap</span><span class="p">;</span>
+    <span class="nl">overflow-x</span><span class="p">:</span> <span class="nb">scroll</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">section</span><span class="nc">.horizontal-scroll</span> <span class="nt">li</span> <span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span><span class="p">;</span>
+    <span class="nl">vertical-align</span><span class="p">:</span> <span class="nb">middle</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">section</span><span class="nc">.horizontal-scroll</span><span class="nd">::-webkit-scrollbar</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">opacity</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>这样做的优势为：</p>
+
+<ul>
+  <li>
+    <p>css 样式与 html 结构解耦。</p>
+  </li>
+  <li>
+    <p>去除冗余 css 代码。</p>
+  </li>
+</ul>
+
+<p>第一条优势显而易见，下面来为大家解释第二条：在代码被压缩上线时，传统做法会使得未被引用的通用样式一同被上线，而 sass 在被解析为 css 时会去除由 % 定义的未被引用的通用样式。</p>
+
+<hr />
+
+<h2 id="四函数">四、函数</h2>
+
+<blockquote>
+  <p>产生值，非行为。</p>
+</blockquote>
+
+<p>不要与 javascript 中的函数混淆。调用时并非执行了某段操作，而是返回了经过某些操作后产生的值，其实类似于有 return 值的 javascript 函数。</p>
+
+<hr />
+
+<h2 id="五语句">五、语句</h2>
+
+<h4 id="三目判断">三目判断</h4>
+
+<p>书写形式：</p>
+
+<ul>
+  <li>if(<strong>条件</strong>, <strong>条件为真所取值</strong>, <strong>条件为假所取值</strong>)</li>
+</ul>
+
+<p>莫名觉得会很常用，与 javascript 中的 <strong>? :</strong> 作用相同。</p>
+
+<h4 id="if">@if</h4>
+
+<h5 id="应用场景-5">应用场景</h5>
+
+<p>定义多行省略时（以 3 行为例），变更显示行数只需修改 line-clamp 属性值，代码如下：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.ellipsis-row3</span> <span class="p">{</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="n">-webkit-box</span><span class="p">;</span>
+    <span class="nl">text-overflow</span><span class="p">:</span> <span class="n">-o-ellipsis-lastline</span><span class="p">;</span>
+    <span class="nl">-webkit-box-orient</span><span class="p">:</span> <span class="n">vertical</span><span class="p">;</span>
+    <span class="nl">-webkit-line-clamp</span><span class="p">:</span> <span class="m">3</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>而定义单行省略只需如下 3 行：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.ellipsis-row1</span> <span class="p">{</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+    <span class="nl">white-space</span><span class="p">:</span> <span class="nb">nowrap</span><span class="p">;</span>
+    <span class="nl">text-overflow</span><span class="p">:</span> <span class="n">ellipsis</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>两段代码差异较大，而我们又想将多行与单行的情况融合在一个通用样式内。此时，可以使用 if 语句将单行省略单独定义。</p>
+
+<p>相关代码：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="k">@for</span> <span class="nv">$lineCount</span> <span class="ow">from</span> <span class="m">1</span> <span class="ow">through</span> <span class="m">3</span> <span class="err">{</span>
+    <span class="nv">%ellipsis-row</span><span class="si">#{</span><span class="nv">$lineCount</span><span class="si">}</span> <span class="err">{</span>
+        <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="err">;</span>
+        <span class="k">@if</span> <span class="nv">$lineCount</span> <span class="o">==</span> <span class="m">1</span> <span class="err">{</span>
+            <span class="nl">white-space</span><span class="p">:</span> <span class="nb">nowrap</span><span class="err">;</span>
+            <span class="nl">text-overflow</span><span class="p">:</span> <span class="n">ellipsis</span><span class="err">;</span>
+        <span class="err">}</span> <span class="o">@</span><span class="nt">else</span> <span class="err">{</span>
+            <span class="nl">display</span><span class="p">:</span> <span class="o">-</span><span class="n">webkit-box</span><span class="err">;</span>
+            <span class="nl">text-overflow</span><span class="p">:</span> <span class="o">-</span><span class="n">o-ellipsis-lastline</span><span class="err">;</span>
+            <span class="na">-webkit-box-orient</span><span class="p">:</span> <span class="n">vertical</span><span class="err">;</span>
+            <span class="na">-webkit-line-clamp</span><span class="p">:</span> <span class="nv">$lineCount</span><span class="err">;</span>
+        <span class="err">}</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+
+<span class="nc">.section1</span> <span class="nt">p</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%ellipsis-row1</span><span class="o">;</span>
+<span class="err">}</span>
+<span class="nc">.section2</span> <span class="nt">p</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%ellipsis-row2</span><span class="o">;</span>
+<span class="err">}</span>
+<span class="nc">.section3</span> <span class="nt">p</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%ellipsis-row3</span><span class="o">;</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.section1</span> <span class="nt">p</span> <span class="p">{</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+    <span class="nl">white-space</span><span class="p">:</span> <span class="nb">nowrap</span><span class="p">;</span>
+    <span class="nl">text-overflow</span><span class="p">:</span> <span class="n">ellipsis</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.section2</span> <span class="nt">p</span> <span class="p">{</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="n">-webkit-box</span><span class="p">;</span>
+    <span class="nl">text-overflow</span><span class="p">:</span> <span class="n">-o-ellipsis-lastline</span><span class="p">;</span>
+    <span class="nl">-webkit-box-orient</span><span class="p">:</span> <span class="n">vertical</span><span class="p">;</span>
+    <span class="nl">-webkit-line-clamp</span><span class="p">:</span> <span class="m">2</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.section3</span> <span class="nt">p</span> <span class="p">{</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="n">-webkit-box</span><span class="p">;</span>
+    <span class="nl">text-overflow</span><span class="p">:</span> <span class="n">-o-ellipsis-lastline</span><span class="p">;</span>
+    <span class="nl">-webkit-box-orient</span><span class="p">:</span> <span class="n">vertical</span><span class="p">;</span>
+    <span class="nl">-webkit-line-clamp</span><span class="p">:</span> <span class="m">3</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="for">@for</h4>
+
+<p>for 循环的书写形式有两种：</p>
+
+<ul>
+  <li>
+    <p>@for <strong>$var</strong> from <strong>start</strong> through <strong>end</strong></p>
+  </li>
+  <li>
+    <p>@for <strong>$var</strong> from <strong>start</strong> to <strong>end</strong></p>
+  </li>
+</ul>
+
+<p>第一种在循环遍历时会对第 <strong>end</strong> 项进行操作，第二种则不会。本人认为习惯使用一种即可，不然易混淆。</p>
+
+<h5 id="应用场景-6">应用场景</h5>
+
+<p>我司喜好做 “固定模板” 需求：运营同学会将一张图片裁切成 n 个区域，点击每一区域的行为有所不同。比如一张美女的面部图，点击其眼睛时会推荐一些双眼皮项目，点击其鼻子时会推荐一些鼻综合项目等等（我司是做微整形交易平台的）。</p>
+
+<p>区域划分是有一定规则的，如下图：当前行仅含一张图片时图片宽度为 100%，两张时为 50%，… n 张时为 (100 / n)%。</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/sass-application/static-template.jpg" alt="" /></p>
+
+<p>相关代码：</p>
+
+<div class="language-sass highlighter-rouge"><pre class="highlight"><code><span class="nv">%clear-float</span> <span class="err">{</span>
+    <span class="k">&amp;</span><span class="nd">:after</span> <span class="err">{</span>
+        <span class="nl">content</span><span class="p">:</span> <span class="s2">""</span><span class="err">;</span>
+        <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span><span class="err">;</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">0</span><span class="err">;</span>
+        <span class="nl">clear</span><span class="p">:</span> <span class="nb">both</span><span class="err">;</span>
+        <span class="nl">visibility</span><span class="p">:</span> <span class="nb">hidden</span><span class="err">;</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+<span class="nv">%adapt-image</span> <span class="err">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span><span class="err">;</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="err">;</span>
+<span class="err">}</span>
+<span class="nv">%static-template</span> <span class="err">{</span>
+    <span class="nt">div</span> <span class="err">{</span>
+        <span class="k">@extend</span> <span class="nv">%clear-float</span><span class="o">;</span>
+        <span class="nt">a</span> <span class="err">{</span>
+            <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="err">;</span>           
+            <span class="nt">img</span> <span class="err">{</span>
+                <span class="k">@extend</span> <span class="nv">%adapt-image</span><span class="o">;</span>
+            <span class="err">}</span>
+        <span class="err">}</span>
+    <span class="err">}</span>
+    <span class="k">@for</span> <span class="nv">$itemCount</span> <span class="ow">from</span> <span class="m">1</span> <span class="ow">through</span> <span class="m">3</span> <span class="err">{</span>
+        <span class="nc">.count</span><span class="si">#{</span><span class="nv">$itemCount</span><span class="si">}</span> <span class="err">{</span>
+            <span class="nt">a</span> <span class="err">{</span>
+                <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="o">/</span><span class="nv">$itemCount</span><span class="err">;</span>
+            <span class="err">}</span>
+        <span class="err">}</span>
+    <span class="err">}</span>
+<span class="err">}</span>
+<span class="nt">section</span><span class="nc">.static-template</span> <span class="err">{</span>
+    <span class="k">@extend</span> <span class="nv">%static-template</span><span class="o">;</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+
+<p>解析后的 css 代码：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nt">section</span><span class="nc">.static-template</span> <span class="nt">div</span><span class="nd">:after</span> <span class="p">{</span>
+    <span class="nl">content</span><span class="p">:</span> <span class="s1">""</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span><span class="p">;</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">clear</span><span class="p">:</span> <span class="nb">both</span><span class="p">;</span>
+    <span class="nl">visibility</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">section</span><span class="nc">.static-template</span> <span class="nt">div</span> <span class="nt">a</span> <span class="nt">img</span> <span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span><span class="p">;</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">section</span><span class="nc">.static-template</span> <span class="nt">div</span> <span class="nt">a</span> <span class="p">{</span>
+    <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">section</span><span class="nc">.static-template</span> <span class="nc">.count1</span> <span class="nt">a</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">section</span><span class="nc">.static-template</span> <span class="nc">.count2</span> <span class="nt">a</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">50%</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">section</span><span class="nc">.static-template</span> <span class="nc">.count3</span> <span class="nt">a</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">33.33333333%</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>上述其实是 <strong>多列布局</strong> 的一个实例，<strong>多列布局</strong> 的应用很广泛，比如导航栏：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/sass-application/column-nav.jpg" alt="" /></p>
+
+<h4 id="each">@each</h4>
+
+<p>each 可循环遍历两种数据类型：</p>
+
+<ul>
+  <li>
+    <p>@each <strong>$var</strong> in <strong>list</strong></p>
+  </li>
+  <li>
+    <p>@each <strong>$var</strong> in <strong>map</strong></p>
+  </li>
+</ul>
+
+<p>具体实例请向上翻至 <strong>多值变量</strong>。</p>
+
+<hr />
+
+<h6 id="20171106-续更">2017/11/06 续更</h6>
+
+<h2 id="sass-安装">Sass 安装</h2>
+
+<p>Sass 依赖于 Ruby 环境，若未安装 Ruby 请移驾<a href="https://rubyinstaller.org/downloads/">此处</a>下载。安装过程请勾选 <strong>Add Ruby executables to your PATH</strong> 确保添加环境变量。</p>
+
+<p>若你具备翻墙技能请直接：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>gem install sass
+</code></pre>
+</div>
+
+<p>下面介绍如何不翻墙安装 Sass：</p>
+
+<p><strong>配置 gem sources</strong></p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># 移除 https://rubygems.org/</span>
+gem sources --remove https://rubygems.org/
+
+<span class="c"># 添加 https://gems.ruby-china.org/</span>
+gem sources -a https://gems.ruby-china.org/
+
+<span class="c"># 查看 sources 确保仅有 https://gems.ruby-china.org/</span>
+gem sources -l
+</code></pre>
+</div>
+
+<p><strong>下载 sass.gem</strong></p>
+
+<p><a href="https://rubygems.org/gems/sass">下载地址</a></p>
+
+<p><strong>安装 sass.gem</strong></p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>gem install <span class="o">[</span>sass.gem 路径]/sass.gem
+</code></pre>
+</div>
+
+<hr />
+
+<p>作者：呆恋小喵</p>
+
+<p>相关文章：<a href="https://sunmengyuan.github.io/garden/2018/02/06/sass-var.html">通过 sass-resources-loader 全局注册 Sass 变量</a></p>
+
+<p>我的后花园：<a href="https://sunmengyuan.github.io/garden/">https://sunmengyuan.github.io/garden/</a></p>
+
+<p>我的 github：<a href="https://github.com/sunmengyuan">https://github.com/sunmengyuan</a></p>
+
+<p>原文链接：<a href="https://sunmengyuan.github.io/garden/2017/05/17/sass-application.html">https://sunmengyuan.github.io/garden/2017/05/17/sass-application.html</a></p>
+
+</article>
+<footer>
+    <a href="/garden/views/posts" class="js_goto_posts">返回目录 - 我的印记</a>
+</footer>
+<div class="browser js_browser">
+    <img src="" />
+</div>
+
+<script src="/garden/assets/script/main.js"></script>
+</body>
+</html>

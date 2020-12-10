@@ -1,0 +1,32 @@
+---
+layout: basic
+title: "印记"
+---
+
+<section class="posts">
+    <ul>
+        {% for post in paginator.posts %}
+        <li>
+            <a href="{{ site.baseurl }}{{ post.url }}?page={{ paginator.page }}" title="{{ post.title }}">
+                <h3>{{ post.title }}</h3>
+                <time>{{ post.date | date_to_string }}</time>
+                <p class="abstract ellipsis-row2">{{ post.abstract }}</p>
+                <ul class="c-fix">
+                    {% for keyword in post.keywords %}
+                    <li>{{ keyword }}</li>
+                    {% endfor %}
+                </ul>
+                <img src="{% if post.thumb %}{{ post.thumb }}{% else %}https://sunmengyuan.github.io/materials/garden/nothumb.jpg{% endif %}" />
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="paginator js_paginator"></div>
+</section>
+<script>
+    pageData.postsData = {
+        postsUrl: '{{ site.baseurl }}/views/posts',
+        curPage: {{ paginator.page }},
+        totalPage: {{ paginator.total_pages }}
+    };
+</script>

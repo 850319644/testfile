@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="前端开发,css3,移动端 web 开发" />
+    <meta name="description" content="浏览器可渲染的最小字号为 12px，但设计图上经常出现小于该值的字体。对于 11px 我往往就按 12px 处理了，可 9px 这样的超小字号处理成 12px 绝对太不地道啊。大家可能都知道通过 transform: scale(n) 能达到缩小字体的效果，但你没有发现并非十分好用？" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+    <title>呆恋小喵的后花园 - 论低于 12px 字体处理方案</title>
+    <link rel="shortcut icon" href="https://sunmengyuan.github.io/materials/garden/shortcut.ico" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-dark.min.css" />
+    <link rel="stylesheet/less" href="/garden/assets/style/style.less" />
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+</head>
+<body>
+<script>
+    var pageData = {};
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement('script');
+        hm.src = 'https://hm.baidu.com/hm.js?6b9830e6ab8073ce1a44ad49a03d8596';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<img src="https://sunmengyuan.github.io/materials/garden/portrait.jpg" alt="呆恋小喵" width="0" height="0" />
+<nav>
+    <a href="javascript:;" class="js_menu_btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </a>
+    <ul class="js_menu">
+        <li><a href="/garden/">Home</a></li>
+        <li><a href="/garden/views/posts" class="js_goto_posts">Posts</a></li>
+        <li><a href="/garden/views/about">About</a></li>
+    </ul>
+</nav>
+<a href="javascript:;" class="gotop js_gotop"></a>
+<header class="post" style="background-image: url('https://sunmengyuan.github.io/materials/garden/banner.jpg')">
+    <div>
+        <h2>论低于 12px 字体处理方案</h2>
+        <time>01 Mar 2017</time>
+        <p class="abstract">浏览器可渲染的最小字号为 12px，但设计图上经常出现小于该值的字体。对于 11px 我往往就按 12px 处理了，可 9px 这样的超小字号处理成 12px 绝对太不地道啊。大家可能都知道通过 transform: scale(n) 能达到缩小字体的效果，但你没有发现并非十分好用？</p>
+        <ul class="c-fix">
+            
+            <li>css3</li>
+            
+            <li>移动端 web 开发</li>
+            
+        </ul>
+    </div>
+</header>
+<article class="js_article">
+    <p>第一个例子：看到红框内 9px 的小字体了吗？用 transform: scale(n) 单独处理这一行，字体被缩小的同时，上下左右间距也被缩小了。那么问题来了：你能算出缩小处理后多出了多少空白，能知道使用 margin-left 向左折回多少像素来实现左对齐吗？显然不能！</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/tinyfont/example-1.jpg" alt="" /></p>
+
+<p>缩小处理后的留白为 <strong><em>(1 - n) * 原尺寸 / 2</em></strong> 像素。原尺寸是不定的，因为这行文案中的价格不一定总是 4 位数，并且对于不同尺寸的屏幕它的占比也不同。所以上述方法缩小了字体却无法实现左对齐。</p>
+
+<p>给大家解释一下我所述的留白为何：自行看图领悟。</p>
+
+<p>transform: scale(n) 处理前：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/tinyfont/tinyfont-space-before.png" alt="" /></p>
+
+<p>transform: scale(n) 处理后：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/tinyfont/tinyfont-space-after.png" alt="" /></p>
+
+<hr />
+
+<p>第二个例子：文字居中对齐所以左右有多少留白都无所谓了吗？我开始也这么认为，然而……</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/tinyfont/example-2.jpg" alt="" /></p>
+
+<p>看似没有问题，其实当该行文字超出限度时，两端并不能与其它行对齐。原因必然是缩小处理后产生了留白。</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/tinyfont/tinyfont-center-space.png" alt="" /></p>
+
+<hr />
+
+<p>下面介绍本人的解决方案：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.tinyscale</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">200%</span><span class="p">;</span>
+    <span class="nl">margin-left</span><span class="p">:</span> <span class="m">-50%</span><span class="p">;</span>
+    <span class="nl">-webkit-transform</span><span class="p">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">0.5</span><span class="p">);</span>
+            <span class="nl">transform</span><span class="p">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">0.5</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>在含小字体的占宽 100% 的父级容器上添加 tinyscale 类，而后将其中所有的尺寸值及间距值乘 2。</p>
+
+<p>缩小为 0.5 倍后：宽度恢复 100%；尺寸值及间距值恢复为所需值。</p>
+
+<p>缩小处理后的留白为 <strong><em>(1 - 0.5) * 200% / 2</em></strong> 即 50%，所以使用 margin-left 向左折回 50% 即可，这样的处理无需考虑横向尺寸不固定的问题。</p>
+
+<p>上述方法的缺点是仅适用于定高的情况，因为纵向的折回值若使用百分比其基准值是宽度非高度……</p>
+
+<p>希望大神们留下更好的解决方案，万分感谢！</p>
+
+<hr />
+
+<h6 id="20170516-续更">2017/05/16 续更</h6>
+
+<p>之前说，不定高的情况无法处理。其实对于外层不定高而内部元素定高的情况是可以处理的。举个例子：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/tinyfont/example-3.jpg" alt="" /></p>
+
+<p>红框内的所有元素被一个父级元素包裹，该父级元素是定宽的，我们可以对其进行横向缩放：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.parent</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">200%</span><span class="p">;</span>
+    <span class="nl">margin-left</span><span class="p">:</span> <span class="m">-50%</span><span class="p">;</span>
+    <span class="nl">-webkit-transform</span><span class="p">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">);</span>
+            <span class="nl">transform</span><span class="p">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>而内部元素是定高的假设为 20px，我们可以对其进行纵向缩放，并在纵向使用 margin 折回一个固定值 (1 - 0.5) * 20 / 2 像素：</p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.child</span> <span class="p">{</span>
+    <span class="nl">margin</span><span class="p">:</span> <span class="m">-5px</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">-webkit-transform</span><span class="p">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">);</span>
+            <span class="nl">transform</span><span class="p">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>对于内部元素高度不确定的情况，暂未思考出解决方案，望大神指导！</p>
+
+<hr />
+
+<p>作者：呆恋小喵</p>
+
+<p>我的后花园：<a href="https://sunmengyuan.github.io/garden/">https://sunmengyuan.github.io/garden/</a></p>
+
+<p>我的 github：<a href="https://github.com/sunmengyuan">https://github.com/sunmengyuan</a></p>
+
+<p>原文链接：<a href="https://sunmengyuan.github.io/garden/2017/03/01/tinyfont.html">https://sunmengyuan.github.io/garden/2017/03/01/tinyfont.html</a></p>
+
+</article>
+<footer>
+    <a href="/garden/views/posts" class="js_goto_posts">返回目录 - 我的印记</a>
+</footer>
+<div class="browser js_browser">
+    <img src="" />
+</div>
+
+<script src="/garden/assets/script/main.js"></script>
+</body>
+</html>

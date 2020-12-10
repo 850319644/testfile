@@ -1,0 +1,25 @@
+---
+layout: basic
+---
+
+<header class="post" style="background-image: url('{% if page.banner %}{{ page.banner }}{% else %}https://sunmengyuan.github.io/materials/garden/banner.jpg{% endif %}')">
+    <div>
+        <h2>{{ page.title }}</h2>
+        <time>{{ page.date | date_to_string }}</time>
+        <p class="abstract">{{ page.abstract }}</p>
+        <ul class="c-fix">
+            {% for keyword in page.keywords %}
+            <li>{{ keyword }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</header>
+<article class="js_article">
+    {{ content }}
+</article>
+<footer>
+    <a href="{{ site.baseurl }}/views/posts" class="js_goto_posts">返回目录 - 我的印记</a>
+</footer>
+<div class="browser js_browser">
+    <img src="" />
+</div>

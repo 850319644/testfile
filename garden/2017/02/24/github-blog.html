@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="前端开发,github pages,jekyll,个人网站搭建" />
+    <meta name="description" content="前段时间，朋友问我如何高大上地展现个人作品。既然要求高大上，无外乎易传播、体验好、摒除纸媒，那就以线上的方式将自己的作品丢给面试官呗（朋友在求职）。我向她推荐了 github pages，一来无需购买服务器及域名，二则因为按照她的需求一个静态站点足矣。本文算是为朋友量身打造，比较适合小白食用，介绍了如何使用静态站点生成工具 jekyll 及 github 服务器搭建个人网站。大神请飘过但不反对批评指正，万分感谢。" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+    <title>呆恋小喵的后花园 - 使用 Jekyll + Github Pages 搭建个人网站</title>
+    <link rel="shortcut icon" href="https://sunmengyuan.github.io/materials/garden/shortcut.ico" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-dark.min.css" />
+    <link rel="stylesheet/less" href="/garden/assets/style/style.less" />
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+</head>
+<body>
+<script>
+    var pageData = {};
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement('script');
+        hm.src = 'https://hm.baidu.com/hm.js?6b9830e6ab8073ce1a44ad49a03d8596';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<img src="https://sunmengyuan.github.io/materials/garden/portrait.jpg" alt="呆恋小喵" width="0" height="0" />
+<nav>
+    <a href="javascript:;" class="js_menu_btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </a>
+    <ul class="js_menu">
+        <li><a href="/garden/">Home</a></li>
+        <li><a href="/garden/views/posts" class="js_goto_posts">Posts</a></li>
+        <li><a href="/garden/views/about">About</a></li>
+    </ul>
+</nav>
+<a href="javascript:;" class="gotop js_gotop"></a>
+<header class="post" style="background-image: url('https://sunmengyuan.github.io/materials/garden/banner.jpg')">
+    <div>
+        <h2>使用 Jekyll + Github Pages 搭建个人网站</h2>
+        <time>24 Feb 2017</time>
+        <p class="abstract">前段时间，朋友问我如何高大上地展现个人作品。既然要求高大上，无外乎易传播、体验好、摒除纸媒，那就以线上的方式将自己的作品丢给面试官呗（朋友在求职）。我向她推荐了 github pages，一来无需购买服务器及域名，二则因为按照她的需求一个静态站点足矣。本文算是为朋友量身打造，比较适合小白食用，介绍了如何使用静态站点生成工具 jekyll 及 github 服务器搭建个人网站。大神请飘过但不反对批评指正，万分感谢。</p>
+        <ul class="c-fix">
+            
+            <li>github pages</li>
+            
+            <li>jekyll</li>
+            
+            <li>个人网站搭建</li>
+            
+        </ul>
+    </div>
+</header>
+<article class="js_article">
+    <h3 id="一创建-github-账号">一、创建 github 账号</h3>
+
+<p>若尚未申请 github 账号，请移驾<a href="https://github.com/">此处</a>进行注册。</p>
+
+<p>github 用户名是可以修改的：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/github-blog/change-username.png" alt="" /></p>
+
+<p>若执行上述操作后发现用户名仍未变更，其原因多半是该用户名已被占用（提示信息不明显，以致很多人不明修改失败的原因）。</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/github-blog/change-username-alert.png" alt="" /></p>
+
+<h3 id="二新建仓库">二、新建仓库</h3>
+
+<p>使用 github 托管个人网站时，所对应仓库的命名是有规则的：<strong><em>[github 用户名].github.io</em></strong>。例如本人的用户名为 sunmengyuan，那么我的个人网站所对应的仓库名为 sunmengyuan.github.io。</p>
+
+<p>下面，开始创建新仓库：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/github-blog/create-repository.png" alt="" /></p>
+
+<p>最后，将项目克隆至本地：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/github-blog/clone-repository.png" alt="" /></p>
+
+<h3 id="三搭建个人网站">三、搭建个人网站</h3>
+
+<p>github 有许多模板主题可供选择，相关代码可自动生成：</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/github-blog/select-theme.png" alt="" /></p>
+
+<p>但本人更倾向于自行搭建模板：一是因为与其改别人的不如自己写；二是为了令自己的网站更符合个人审美；三是因为作为一枚傲娇的前端工程师套用别人的模板实在说不过去。</p>
+
+<p>下面来一句广告语，欢迎参观<a href="https://sunmengyuan.github.io">呆恋小喵的后花园</a>，你可能觉得它不够漂亮，但是我喜欢。该网站使用 jekyll 框架搭建，图片资源使用七牛托管。为何要将资源托管呢？因为 github pages 的免费空间有限啊，图片辣么大不是么。</p>
+
+<hr />
+
+<h4 id="-关于-jekyll">* 关于 jekyll</h4>
+
+<p>jekyll 是一种静态站点生成工具，它可以使发表文章的过程简化为添加并撰写一篇 markdown 文档。</p>
+
+<p>下面，<strong><em>以本人的个人网站为例</em></strong>，简单介绍 jekyll 的使用方法，更多内容请参阅<a href="http://jekyll.com.cn/">官方文档</a>。</p>
+
+<p>目录结构如下：_layouts 内的文件为骨架模板；_posts 内的 markdown 文件会转化为我们所需发表的文章；assets 含一些静态资源文件；views 包含站点内的所有页面；_config.yml 为配置文件。</p>
+
+<p><img src="https://sunmengyuan.github.io/materials/garden/post/github-blog/jekyll-catalog.png" alt="" /></p>
+
+<h5 id="-关于-jekyll-开发环境">* 关于 jekyll 开发环境</h5>
+
+<p>为何需要开启 jekyll 服务？一是使 jekyll 可自动编译文件从而生成静态站点；二是方便在开发环境预览修改效果。</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># 启动 jekyll 服务</span>
+jekyll server
+</code></pre>
+</div>
+
+<p>注意事项：</p>
+
+<ul>
+  <li>
+    <p>jekyll 服务的启动应在含 _config.yml 文件的目录下。</p>
+  </li>
+  <li>
+    <p>启动 jekyll 服务时若提示含未安装插件，请查看 _config.yml 文件中的 gems 配置项并将所需插件一一安装。</p>
+  </li>
+</ul>
+
+<hr />
+
+<p>不介意各位<a href="https://github.com/sunmengyuan/sunmengyuan.github.io/tree/master/website">下载本人的原创模板</a>做实验，将它拷贝至你的 [github 用户名].github.io 仓库并提交。不了解 git 命令行的同学请查阅<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">教程</a>。</p>
+
+<p>现在，访问 <strong>[github 用户名].github.io/garden/</strong> 会有惊喜嗷~</p>
+
+<p>恭喜你可以愉快的撰写文档了！今后，增删文章只需在 _posts 文件夹内增删对应的 markdown 文件，若想在本地预览效果，只需启动 jekyll 服务并访问 <a href="http://localhost:4000/garden/">http://localhost:4000/garden/</a>。</p>
+
+<hr />
+
+<p>作者：呆恋小喵</p>
+
+<p>我的后花园：<a href="https://sunmengyuan.github.io/garden/">https://sunmengyuan.github.io/garden/</a></p>
+
+<p>我的 github：<a href="https://github.com/sunmengyuan">https://github.com/sunmengyuan</a></p>
+
+<p>原文链接：<a href="https://sunmengyuan.github.io/garden/2017/02/24/github-blog.html">https://sunmengyuan.github.io/garden/2017/02/24/github-blog.html</a></p>
+
+</article>
+<footer>
+    <a href="/garden/views/posts" class="js_goto_posts">返回目录 - 我的印记</a>
+</footer>
+<div class="browser js_browser">
+    <img src="" />
+</div>
+
+<script src="/garden/assets/script/main.js"></script>
+</body>
+</html>
